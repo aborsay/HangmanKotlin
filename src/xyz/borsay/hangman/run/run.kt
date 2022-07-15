@@ -1,46 +1,57 @@
 package xyz.borsay.hangman.run
 
-import java.util.Random
+import java.util.*
 
+val wordsForHandman = linkedMapOf(Pair("white",0),
+    Pair("heart",0),
+    Pair("coffee",0),
+    Pair("work",0),
+    Pair("tech",0),
+    Pair("stupid",0),
+    Pair("soccer",0),
+    Pair("orangutan",0),
+    Pair("zebra",0),
+    Pair("Lynchburg",0),
+    Pair("Virginia",0),
+)
+var hangmanWord:String = ""
 
 fun main() {
-    val wordsForHandman = linkedMapOf(Pair("white",0),
-        Pair("heart",0),
-        Pair("coffee",0),
-        Pair("work",0),
-        Pair("tech",0),
-        Pair("stupid",0),
-        Pair("soccer",0),
-        Pair("orangutan",0),
-        Pair("zebra",0),
-        Pair("lynchburg",0),
-        Pair("virginia",0),
-    )
+    startGame()
+}
 
-    var hangmanWord:String
-
-
+/**
+ * Game is started here.
+ */
+fun startGame(){
     for(count in 0 until wordsForHandman.size){
         var whichWord: Int
         do {
             whichWord = Random().nextInt(0, wordsForHandman.size )
         }while(wordsForHandman.values.elementAt(whichWord) != 0)
 
-        hangmanWord = wordsForHandman.keys.elementAt(whichWord)
+        hangmanWord = wordsForHandman.keys.elementAt(whichWord).lowercase()
         wordsForHandman[hangmanWord] = wordsForHandman.values.elementAt(whichWord)+1
-        when(count){
-            0 -> println("Here is your first word :)\n")
-            wordsForHandman.size -> println("Ready or not, here is your last word :);)\n")
-            else -> println("Now, time for the next word!!! :) \n")
-        }
-        hangmanGame(hangmanWord)
+        printFirstLine(count)
+        hangmanGame()
     }
-
 }
 
+/**
+ * Just to move it seperated to print first line with each word.
+ */
+fun printFirstLine(count: Int){
+    when(count){
+        0 -> println("Here is your first word :)\n")
+        wordsForHandman.size -> println("Ready or not, here is your last word :);)\n")
+        else -> println("Now, time for the next word!!! :) \n")
+    }
+}
 
-
-fun hangmanGame(hangmanWord: String){
+/**
+ * Game is done here
+ */
+fun hangmanGame(){
     val guessedWord = arrayListOf<String>()
 
     val guessedLetters = arrayListOf<String>()
@@ -64,6 +75,7 @@ fun hangmanGame(hangmanWord: String){
         var guessedLetter: String
         do{
             guessedLetter = readLine()?:""
+            guessedLetter = guessedLetter.lowercase()
             if(guessedLetters.contains(guessedLetter))
                 println("That letter has already been used!")
 
@@ -87,6 +99,8 @@ fun hangmanGame(hangmanWord: String){
         }
 
     }while(guessCount<6 && !guessCorrectWord)
+
+    //This is the final thing before next word is called
     if(guessCount<6)
         println(" $line $twoLine You solved the hangman with correct word - \"$hangmanWord\"!!!!!!!!!!!\n")
     else
